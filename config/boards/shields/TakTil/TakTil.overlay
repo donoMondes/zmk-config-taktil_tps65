@@ -58,8 +58,7 @@
         /* Resolution per TPS65 datasheet: 3072 x 2048 y*/
         resolution-x = <3072>;
         resolution-y = <2048>;
-        max-x = <3072>;
-        max-y = <2048>;
+
         /* GPIO connections for trackpad control - avoid conflicts with matrix pins */
         int-gpios = <&pro_micro 19 GPIO_ACTIVE_HIGH>;  /* INT pin for interrupt mode */
         rst-gpios = <&pro_micro 18 GPIO_ACTIVE_HIGH>;  /* RST pin for hardware reset */
