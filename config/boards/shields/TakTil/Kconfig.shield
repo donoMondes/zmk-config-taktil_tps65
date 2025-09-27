@@ -1,2 +1,4 @@
+rsource "../../../drivers/sensor/Kconfig"
+
 config SHIELD_TAKTIL
     def_bool $(shields_list_contains, TakTil)
