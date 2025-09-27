@@ -28,41 +28,6 @@ static int tps65_device_reset(const struct device *dev);
 static int tps65_verify_device_id(const struct device *dev);
 static int tps65_configure_device(const struct device *dev);
 
-struct tps65_data {
-    struct k_work_delayable work;
-    struct k_mutex lock;
-    const struct device *dev;
-    
-    /* Touch data */
-    int16_t x;
-    int16_t y;
-    uint8_t touch_state;
-    uint8_t touch_strength;
-    
-    /* Device state */
-    bool device_ready;
-    bool initialized;
-    uint8_t error_count;
-    
-    /* GPIO callback */
-    struct gpio_callback gpio_cb;
-    
-    /* Callbacks */
-    sensor_trigger_handler_t trigger_handler;
-    const struct sensor_trigger *trigger;
-};
-
-struct tps65_config {
-    struct i2c_dt_spec i2c;
-    struct gpio_dt_spec int_gpio;
-    struct gpio_dt_spec rst_gpio;
-    uint8_t resolution_x;
-    uint8_t resolution_y;
-    bool invert_x;
-    bool invert_y;
-    bool swap_xy;
-};
-
 /* I2C helper functions with error recovery */
 static int tps65_i2c_read_reg(const struct device *dev, uint8_t reg, uint8_t *data, size_t len)
 {

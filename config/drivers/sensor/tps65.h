@@ -37,6 +37,9 @@
 #define TPS65_REG_GESTURE_TIMERS    0x44
 #define TPS65_REG_ACTIVE_CHANNELS   0x45
 
+#define TPS65_REG_SYS_CONFIG_0      0x20
+#define TPS65_REG_X_RESOLUTION      0x66
+
 /* IQS550 specific configuration registers */
 #define TPS65_REG_SYS_CONFIG        0x50
 #define TPS65_REG_FILTER_SETTINGS   0x51
@@ -73,35 +76,39 @@
 #define TPS65_INIT_TIMEOUT_MS       500
 #define TPS65_MAX_RETRIES           3
 
-struct tps65_config {
-	struct i2c_dt_spec i2c;
-	struct gpio_dt_spec ready_gpio;
-	struct gpio_dt_spec reset_gpio;
-	uint16_t max_x;
-	uint16_t max_y;
-	uint8_t max_touch_points;
+struct tps65_data {
+    struct k_work_delayable work;
+    struct k_mutex lock;
+    const struct device *dev;
+    
+    /* Touch data */
+    int16_t x;
+    int16_t y;
+    uint8_t touch_state;
+    uint8_t touch_strength;
+    
+    /* Device state */
+    bool device_ready;
+    bool initialized;
+    uint8_t error_count;
+    
+    /* GPIO callback */
+    struct gpio_callback gpio_cb;
+    
+    /* Callbacks */
+    sensor_trigger_handler_t trigger_handler;
+    const struct sensor_trigger *trigger;
 };
 
-struct tps65_data {
-	const struct device *dev;
-	struct k_work work;
-	struct k_timer poll_timer;
-	struct k_sem sem;
-	struct gpio_callback ready_cb;
-
-	uint8_t num_touches;
-	uint16_t x[TPS65_MAX_TOUCH_POINTS];
-	uint16_t y[TPS65_MAX_TOUCH_POINTS];
-	uint8_t touch_strength[TPS65_MAX_TOUCH_POINTS];
-	uint8_t touch_area[TPS65_MAX_TOUCH_POINTS];
-	
-	/* Error tracking and recovery */
-	uint8_t error_count;
-	bool device_ready;
-	int64_t last_success_time;
-	
-	/* Power management */
-	bool is_sleeping;
+struct tps65_config {
+    struct i2c_dt_spec i2c;
+    struct gpio_dt_spec int_gpio;
+    struct gpio_dt_spec rst_gpio;
+    uint8_t resolution_x;
+    uint8_t resolution_y;
+    bool invert_x;
+    bool invert_y;
+    bool swap_xy;
 };
 
 void tps65_ready_callback(const struct device *gpio_dev,

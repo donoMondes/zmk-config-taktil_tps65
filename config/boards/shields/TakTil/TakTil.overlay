@@ -63,15 +63,5 @@
         int-gpios = <&pro_micro 19 GPIO_ACTIVE_HIGH>;  /* INT pin for interrupt mode */
         rst-gpios = <&pro_micro 18 GPIO_ACTIVE_HIGH>;  /* RST pin for hardware reset */
         
-        /* Touch sensitivity and behavior */
-        touch-threshold = <10>;        /* Lower = more sensitive */
-        max-touches = <5>;             /* 1-5 simultaneous touches */
-        palm-reject-threshold = <100>; /* Ignore touches larger than this */
-        
-        /* Enable gesture recognition */
-        gesture-enable;
-        
-        /* Communication timeout */
-        i2c-timeout-ms = <10>;
     };
 }; 
